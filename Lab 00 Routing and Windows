@@ -1,0 +1,50 @@
+Basic Set-up Instructions from last semester: https://github.com/bparenteau/sys-255-01-tech-journal/blob/master/Parenteau_Lab01TechJournal_SYS25501.txt
+
+Network Assignment: 10.0.17.104
+
+fw01 config:
+  1) Not using VLANs
+  2) em0 - WAN (10.0.17.104/24)
+  3) em1 - LAN (10.0.5.2/24)
+  4) WAN Upstream - 10.0.17.2
+  5) Not using IPv6, DHCP, or reverting to http
+  6) hostname: fw01-braeden
+  7) primary DNS - 8.8.8.8
+
+wks01 config:
+  1) IP - 10.0.5.100/24
+  2) Gateway - 10.0.5.2
+  3) DNS - Set initially as 10.0.5.2 but change to 10.0.5.5 when ad01 is setup
+  4) hostname: wks01-braeden
+
+ad01 config:
+  NOTE: since ad01 is commandline this semester, config has to be done with the sconfig command
+  1) IP - 10.0.5.5/24
+  2) Gateway - 10.0.5.2
+  3) DNS - 10.0.5.2
+  4) hostname - ad01-braeden
+ 
+ mgmt01 config (use sconfig in command line):
+  1) IP - 10.0.5.10
+  2) Gateway - 10.0.5.2
+  3) DNS - 10.0.5.5
+  4) join to braeden.local
+  5) hostname - mgmt01-braeden
+  6) Through server manager, install ADDS and ADLDS tools, DHCP Server Tools, DNS Server Tools, and File Service Tools.
+ 
+Installing AD:
+  1) run Install-WindowsFeature AD-Domain-Services -IncludeManagement Tools to install Active Directory
+  2) to create domain: run Install-ADDSForest -DomainName braeden.local (if change braeden to another name if configuring for something other than this class)
+  3) to check installs are done correctly, run whoami and you should see an output similar to braeden/administrator
+
+Join WKS01:
+  You need to change the DNS to 10.0.5.5 before doing this so it connects properly.
+  To connect through commandline (make sure you're in powershell or invoke it in cmdln):
+    add-computer -dmainname "braeden" -restart, use credentials for Administrator account on ad01
+
+Deliverable Commands:
+1) Query Active Directory: Get-ADComputer -Filter *
+2) Enumerate named Domain Users: Get-ADUser -filter 'Name -like "brae*"' -Properties MemberOf
+3) printing DNS server address: Get-DnsClientServerAddress
+4) Printing DNS A Records: Get-DnsServerResourceRecord -ZoneName braeden.local -ComputerName ad01-braeden -RRType A
+5) Priting PTR Records: Get-DnsServerResourceRecord -ZoneName 5.0.10.in-addr.arpa -ComputerName ad01-braeden -RRType PTR
