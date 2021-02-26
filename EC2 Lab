@@ -1,0 +1,45 @@
+Prereqs for the lab: Make sure you've seet up your AWS student account via the email sent and that you have a linux machine capable of sshing in (I used a kali linux VM)
+
+I) Redhat Instance
+  In the AWS console, click "Launch a Virtual Machine"
+  Navigate down the list until you find the Red Hat Enterprise Linux 8 (HVM) that is listed as being free
+    Make sure 64 bit x86 is selected and hit the blue button
+  All of the default configurations for the VM can be kept as defaults, so you can navigate through them or just select the Review and Launch button
+  Next, click Launch
+  When prompted for a key pair, choose to create a new one and name it SYS265-SP21, and MAKE SURE YOU SAVE IT
+    Download the file and move it to your desktop so it is easier to call upon later. It may be a good idea to back up the file for easier access
+  Launch the instance.
+  Navigate to the "Instances" page, click on the blue name of the VM (it's a good idea to name it, click on the -- before the name to do so) and note the PUBLIC IP address
+  Open a command prompt on your linux machine (MAKE SURE THE KEY FILE IS ON THAT MACHINE)
+  Change the permissions of the key with "chmod 600 Desktop/SYS265-SP21.pem" to ensure there are no issues with it when sshing
+  Now, ssh into the Redhat instance with "ssh ec2-user@[ip address from the Instances page] -i Desktop/SYS265-SP21.pem"
+  You will now be in the Redhat instance
+  
+  To update the instance:
+    sudo yum -y update
+  
+  To install python on the instance:
+    sudo yum -y install python3.8
+  
+  Starting a python http server:
+    Create a new directory on the redhat instance with "mkdir test-firewall"
+    Change the directory with "cd test-firewall"
+    Create a sample html page with "echo "Testing EC2 Firewall" > index.html"
+    Use python to start the server on port 9000 with "python3.8 -m http.server 9000"
+    Back on AWS, go to the instance for Redhat, navigate to the Security tab, and open security groups
+    Edit the inbound rules to add a new rules with Custom TCP as the protocol, 9000 as the port, a source of 0.0.0.0/0, and a description of testing firewall.
+    Save rules.
+    Then naviagte to the webpage using either the IP address for the Redhat instance or the DNS option given, followed with :9000, and your html page should show.
+
+II) Windows 2019 Server
+  Navigate back to the page for creating an instance (you can use the orange Launch instance button in the top right corner of the instances page as well)
+  Navigate through the page unti you find the "Microsoft Windows Server 2019" listed as being free, go through the setup pages until you get to the security groups page and
+    select "use an existing", choosing launch-wizard 1, then review and launch the VM. (Make sure you choose to use the same key as before)
+  Once again navigate to the security groups configuration page, and add an inbound rule for RDP using port 3389, sourced from 0.0.0.0/0 and with a description of RDP Inbound
+  To get the admin password for the machine, go to the instances page, select the windows machine (which, once again, you should rename), select Actions, Security, then
+    Get Windows Password
+  Upload the key file when prompted, hit decrypt password, and take note of this password somehow.
+  Now, on a windows machine, use mstsc to remote into the server machine.
+    When prompted for a hostname or IP address, use the IP address for the windows instance that AWS gives to you.
+    Make sure you log in using the Administrator user and the password given to you.
+  You should now be able to access the windows instance
