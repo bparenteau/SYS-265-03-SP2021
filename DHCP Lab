@@ -1,0 +1,14 @@
+How to setup DHCP on PFSense
+    1. Log on to WKS01 on named admin account
+    2. Open chrome and enter the IP of the firewall (10.0.5.2)
+    3. Log in to pfsense using the pfsense admmin user and corresponding password
+    4. Navigate to Services->DHCP Server, and make sure LAN is selected
+    5. Check to enable DHCP on the LAN interface
+    6. In Range, insert the range for DHCP (mine was 10.0.5.150 - .200)
+    7. Check Change DHCP display lease time from UTC to local time
+    8. Under DNS server 1, input the DNS server (10.0.5.5)
+    9. Under Gateway, input the address for the firewall (10.0.5.2)
+    10. Under Domain name, put the domain name (BRAEDEN)
+    11. Click the "Save" button at the bottom of the page
+    12. Change your WKS's IP settings to get automatically from DHCP server instead of static
+    13. In CMD ipconfig /all to confirm.
