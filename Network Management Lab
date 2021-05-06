@@ -1,0 +1,57 @@
+How to setup SNMP on PFSense
+  1. When on PFSense, navigate to Services->SNMP
+  2. Enable SNMP
+  3. Input System Location, System Contact, and change the Bind Interfaces to LAN.
+  4. Click Save
+  5. Restart the service
+
+How to disable SSH logins for the root account
+  1. Log in to server as root (sudo -i)
+  2. Type command "vi /etc/ssh/sshd_config"
+  3. Find the line where it says "PermitRootLogin yes" and change it to no
+  4. Underneath, add the line "AllowUsers braeden"
+  5. Save and exit the file
+  6. Restart the service with the command "service sshd restart"
+
+How to allow a port throught the firewall
+  1. On a Linux machine, type "firewall-cmd --permanent --add-port=[port]/[protocol]" (ie. "firewall-cmd --permanent --add-port=161/udp")
+  2. Reload firewall with "firewall-cmd --reload"
+  3. Check that the port is allowed through with "firewall-cmd --query-port=161/udp"
+
+How to install SNMP through the Windows GUI
+  1. In server manager, click on the top right where it says "Manage" and click "add roles and features"
+  2. Select the server that you want to install it on
+  3. Under "Features", select "SNMP Service" and under it "SNMP WMI Provider"
+  4. Confirm installation and let it install
+
+How to start a Remote Powershell Session between two windows boxes
+  1. Open powershell
+  2. Use the command "Enter-PSSession [computername]"
+  3. To exit the session, type "Exit-PSSession"
+
+How to enable the "Computer Management" feature in mgmt01-braeden
+  1. Start a remote powershell session with ad01-braeden
+  2. Type the command { Set-NetFirewallRule -DisplayGroup "Remote Event Log Management" -Enabled True }
+  3. The command should go through and you should now be able to remotely manage AD01 from MGMT01
+
+How to enable SNMP Services on AD01
+  1. On MGMT01, on All Servers, go to ad01 and click "Computer Management"
+  2. Click on "Services and Applications", Then click on "Services"
+  3. Find SNMP Service in the services
+  4. Double click and go to Security Settings
+  5. Under accepted community names, add "SYS265" as "READONLY"
+  6. Under Accept SNMP Packets from these hosts, add "nmon01-braeden"
+  7. Click Apply and OK
+  8. Restart the service by clicking "Restart the service"
+
+How to use SNMP Service
+  1. Use the command "snmpwalk -Os -c SYS265 -v2c ad01-braeden"
+    a. To find out the line count, you can add "| wc -l" to the end of the command.
+    b. By adding "system" to the end, you can see the number of systems running on the computer
+
+How to listen to ports on a Linux machine
+  1. To listen to a port and display what was in the packets, type "sudo tcpdump -i ens192 port 161 -c10 -AAA" 
+  2. "ens192" is the name of the Connection you want to listen to
+  3. "161" is the port number which you want to listen to
+  4. "-c10" is how many packets you want to listen for (ie. -c24)
+  5. "-AAA" Means you're asking for the information in a humanely readable format.
