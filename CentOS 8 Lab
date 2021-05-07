@@ -1,0 +1,19 @@
+Changing IP address using nmcli
+  1. Use the command "sudo nmcli connection modify ens192 IPv4.address 10.0.5.234"
+  2. Then "nmcli connection down ens192 && sudo nmcli connection up ens192" (Make sure to update the DNS record)
+Installing Cockpit
+  1. "dnf install cockpit -y"
+  2. "systemctl start cockpit.socket" and "systemctl enable cockpit.socket" to enable at boot.
+  3. "firewall-cmd --permanent --add-service=cockpit" and then reload with "firewall-cmd --reload"
+  4. Connect to the website via 10.0.5.234:9090
+  5. Login using an account on ansible02
+How to add Ansible2 to your AD Domain
+  1. Run "dnf install realmd sssd oddjob oddjob-mkhomedir adcli samba-common samba-common-tools krb5-workstation authselect-compat"
+  2. To join the domain, use "realm join braeden.local -U braeden-adm" and enter the password when prompted
+  3. To verify that everything is working, type "realm list" and it should show braeden.local
+  4. Run "authselect select sssd" and "authselect select sssd with-mkhomedir
+  5. Restart the service with "systemctl restart sssd"
+  6. To add a domain user to be able to ssh into ansible02, type "realm permit braeden-adm@braeden.local".
+  7. To allow a user access to sudo perms, create the sudo config file: "vi /etc/sudoers.d/domain_admins".
+  8. Add the line "braeden-adm@braeden.local  ALL=(ALL) ALL" to the file.
+  9. You can now login to ansible2 using braeden-adm@braeden.local.
